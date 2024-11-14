@@ -1,0 +1,105 @@
+CREATE DATABASE universe;
+
+\c universe;
+
+CREATE TABLE galaxy (
+    galaxy_id SERIAL PRIMARY KEY,
+    name VARCHAR(50) UNIQUE NOT NULL,
+    type TEXT NOT NULL,  -- Using TEXT type
+    age_in_million_years NUMERIC(10, 2) NOT NULL,  -- Using NUMERIC type
+    has_life BOOLEAN NOT NULL  -- Using BOOLEAN type
+);
+
+CREATE TABLE star (
+    star_id SERIAL PRIMARY KEY,
+    name VARCHAR(50) UNIQUE NOT NULL,
+    galaxy_id INT REFERENCES galaxy(galaxy_id) ON DELETE CASCADE,  -- Foreign key to galaxy
+    mass_in_solar_masses NUMERIC(5, 2) NOT NULL,  -- Using NUMERIC type
+    is_brightest BOOLEAN NOT NULL  -- Using BOOLEAN type
+);
+
+CREATE TABLE planet (
+    planet_id SERIAL PRIMARY KEY,
+    name VARCHAR(50) UNIQUE NOT NULL,
+    star_id INT REFERENCES star(star_id) ON DELETE CASCADE,  -- Foreign key to star
+    orbit_distance INT NOT NULL,  -- Using INT type
+    is_habitable BOOLEAN NOT NULL  -- Using BOOLEAN type
+);
+
+CREATE TABLE moon (
+    moon_id SERIAL PRIMARY KEY,
+    name VARCHAR(50) UNIQUE NOT NULL,
+    planet_id INT REFERENCES planet(planet_id) ON DELETE CASCADE,  -- Foreign key to planet
+    radius_km INT NOT NULL,  -- Using INT type
+    is_geologically_active BOOLEAN NOT NULL  -- Using BOOLEAN type
+);
+
+CREATE TABLE asteroid_belt (
+    asteroid_belt_id SERIAL PRIMARY KEY,
+    name VARCHAR(50) UNIQUE NOT NULL,
+    galaxy_id INT REFERENCES galaxy(galaxy_id) ON DELETE SET NULL,  -- Foreign key to galaxy
+    width_km INT NOT NULL,  -- Using INT type
+    has_metal_content BOOLEAN NOT NULL  -- Using BOOLEAN type
+);
+
+INSERT INTO galaxy (name, type, age_in_million_years, has_life)
+VALUES
+('Milky Way', 'Spiral', 13600.00, TRUE),
+('Andromeda', 'Spiral', 10400.50, FALSE),
+('Triangulum', 'Spiral', 9200.75, FALSE),
+('Whirlpool', 'Spiral', 7800.00, FALSE),
+('Sombrero', 'Elliptical', 11400.25, FALSE),
+('Pinwheel', 'Spiral', 11500.00, FALSE);
+
+INSERT INTO star (name, galaxy_id, mass_in_solar_masses, is_brightest)
+VALUES
+('Sun', 1, 1.00, TRUE),
+('Sirius', 2, 2.06, TRUE),
+('Betelgeuse', 1, 20.00, FALSE),
+('Proxima Centauri', 1, 0.12, FALSE),
+('Rigel', 3, 18.00, TRUE),
+('Vega', 4, 2.10, TRUE);
+
+INSERT INTO planet (name, star_id, orbit_distance, is_habitable)
+VALUES
+('Earth', 1, 149600000, TRUE),
+('Mars', 1, 227900000, FALSE),
+('Venus', 1, 108200000, FALSE),
+('Proxima b', 4, 7500000, TRUE),
+('Kepler-442b', 5, 330000000, TRUE),
+('Kepler-452b', 5, 385000000, TRUE),
+('Trappist-1e', 6, 40000000, TRUE),
+('Trappist-1f', 6, 45000000, FALSE),
+('Trappist-1g', 6, 49000000, FALSE),
+('Kepler-22b', 5, 60000000, TRUE),
+('Mars 2', 2, 230000000, FALSE),
+('Venus 2', 2, 110000000, FALSE);
+
+INSERT INTO moon (name, planet_id, radius_km, is_geologically_active)
+VALUES
+('Moon', 1, 1737, FALSE),
+('Phobos', 2, 11, FALSE),
+('Deimos', 2, 6, FALSE),
+('Io', 3, 1821, TRUE),
+('Europa', 3, 1560, TRUE),
+('Ganymede', 3, 2634, TRUE),
+('Callisto', 3, 2410, FALSE),
+('Phobos 2', 4, 10, FALSE),
+('Deimos 2', 4, 8, FALSE),
+('Titan', 5, 2575, TRUE),
+('Enceladus', 5, 252, TRUE),
+('Rhea', 6, 764, FALSE),
+('Dione', 6, 561, FALSE),
+('Triton', 7, 1353, TRUE),
+('Charon', 7, 606, FALSE),
+('Nix', 8, 74, FALSE),
+('Hydra', 8, 61, FALSE),
+('Kari', 9, 80, FALSE),
+('Ariel', 10, 581, TRUE),
+('Umbriel', 10, 584, FALSE);
+
+INSERT INTO asteroid_belt (name, galaxy_id, width_km, has_metal_content)
+VALUES
+('Main Belt', 1, 300000000, TRUE),
+('Kuiper Belt', 1, 1000000000, FALSE),
+('Oort Cloud', 2, 2000000000, TRUE);
